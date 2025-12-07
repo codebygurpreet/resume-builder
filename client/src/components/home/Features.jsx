@@ -10,11 +10,13 @@ const Features = () => {
       id="features"
       className="flex flex-col items-center my-10 scroll-mt-12"
     >
+      {/* Badge */}
       <div className="flex items-center gap-2 text-sm text-geen-600 bg-green-400/10 rounded-full px-6 py-1.5">
         <Zap width={14} />
         <span>Simple Process</span>
       </div>
 
+      {/* Title Component */}
       <Title
         title="Build your resume"
         description="Our streamlined process
@@ -22,6 +24,7 @@ const Features = () => {
         AI-powered tools and features."
       />
 
+      {/* Features Grid */}
       <div className="flex flex-col md:flex-row items-center justify-center xl:-my-10">
         <img
           className="max-w-2xl w-full xl:-ml-32"
