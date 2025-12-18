@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import PersonalInfoForm from "../components/PersonalInfoForm";
 import ResumePreview from "../components/ResumePreview";
+import TemplateSelector from "../components/TemplateSelector";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -43,7 +44,6 @@ const ResumeBuilder = () => {
   // creating states for background and removal and tracking active section
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [removeBackground, setRemoveBackground] = useState(false);
-
 
   // all sections of resume builder
   const sections = [
@@ -76,73 +76,96 @@ const ResumeBuilder = () => {
       {/* Panels */}
       <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="grid lg:grid-cols-12 gap-8">
-
           {/* Left Panel - Form */}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
-
               {/* progress bar using activeSectionIndex */}
               <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
               <hr
                 className="absolute top-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 border-none transition-all duration-2000"
                 style={{
                   width: `${
-                    (activeSectionIndex * 100) / (sections.length - 1)}%` }}
-                    
+                    (activeSectionIndex * 100) / (sections.length - 1)
+                  }%`,
+                }}
               />
-              
 
               {/* Section Navigation - buttons (template, accent, prev, next)*/}
               <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
-
                 {/* buttons - template and accent */}
-                <div></div>
-
+                <div className="flex items-center">
+                  <TemplateSelector
+                    selectedTemplate={resumeData.template}
+                    onChange={(template) =>
+                      setResumeData((prev) => ({ ...prev, template }))
+                    }
+                  />
+                </div>
 
                 {/* buttons - prev and next */}
                 <div className="flex items-center">
-                  { activeSectionIndex !== 0 && (
-                      <button onClick= {()=> setActiveSectionIndex((prevIndex)=>Math.max(prevIndex - 1, 0))}
-                      className="flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all" disabled={activeSectionIndex == 0}>
-                        <ChevronLeft className="size-4"/>
-                        Previous
-                      </button>
-                    )}
-                    
-                    <button onClick= {()=> setActiveSectionIndex((prevIndex)=>Math.min(prevIndex + 1, sections.length - 1))}
-                      className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all ${activeSectionIndex === sections.length - 1 && 'opacity-50'}`} disabled={activeSectionIndex == sections.length - 1}>
-                        Next
-                        <ChevronRight className="size-4"/>
-                      </button>
+                  {activeSectionIndex !== 0 && (
+                    <button
+                      onClick={() =>
+                        setActiveSectionIndex((prevIndex) =>
+                          Math.max(prevIndex - 1, 0)
+                        )
+                      }
+                      className="flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all"
+                      disabled={activeSectionIndex == 0}
+                    >
+                      <ChevronLeft className="size-4" />
+                      Previous
+                    </button>
+                  )}
 
+                  <button
+                    onClick={() =>
+                      setActiveSectionIndex((prevIndex) =>
+                        Math.min(prevIndex + 1, sections.length - 1)
+                      )
+                    }
+                    className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all ${
+                      activeSectionIndex === sections.length - 1 && "opacity-50"
+                    }`}
+                    disabled={activeSectionIndex == sections.length - 1}
+                  >
+                    Next
+                    <ChevronRight className="size-4" />
+                  </button>
                 </div>
               </div>
 
               {/* Form Content */}
               <div className="space-y-6">
-                {activeSection.id == 'personal' && (
-                  <PersonalInfoForm data= {resumeData.personal_info} onChange={(data)=> setResumeData(prev => ({...prev, personal_info: data}))} removeBackground={removeBackground} setRemoveBackground={setRemoveBackground}/>
+                {activeSection.id == "personal" && (
+                  <PersonalInfoForm
+                    data={resumeData.personal_info}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        personal_info: data,
+                      }))
+                    }
+                    removeBackground={removeBackground}
+                    setRemoveBackground={setRemoveBackground}
+                  />
                 )}
               </div>
-
-
             </div>
           </div>
-
 
           {/* Right Panel - Preview */}
           <div className="lg:col-span-7 max-lg:mt-6">
-
-            <div>
-              {/* Buttons */}
-            </div>
+            <div>{/* Buttons */}</div>
 
             {/* resume preview Component */}
-            <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color}/>
-
+            <ResumePreview
+              data={resumeData}
+              template={resumeData.template}
+              accentColor={resumeData.accent_color}
+            />
           </div>
-
-
         </div>
       </div>
     </div>
