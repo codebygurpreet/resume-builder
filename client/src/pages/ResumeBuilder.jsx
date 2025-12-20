@@ -17,6 +17,7 @@ import ResumePreview from "../components/ResumePreview";
 import TemplateSelector from "../components/TemplateSelector";
 import ColorPicker from "../components/ColorPicker";
 import ProfessionalSummaryForm from "../components/ProfessionalSummaryForm";
+import ExperienceForm from "../components/ExperienceForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -51,7 +52,7 @@ const ResumeBuilder = () => {
   const sections = [
     { id: "personal", name: "personal Info", icon: User },
     { id: "summary", name: "Summary", icon: FileText },
-    { id: "experince", name: "Experince", icon: Briefcase },
+    { id: "experience", name: "Experience", icon: Briefcase },
     { id: "education", name: "Education", icon: GraduationCap },
     { id: "projects", name: "Projects", icon: FolderIcon },
     { id: "skills", name: "Skills", icon: Sparkles },
@@ -150,6 +151,7 @@ const ResumeBuilder = () => {
 
               {/* Form Content */}
               <div className="space-y-6">
+                {/* personal section */}
                 {activeSection.id == "personal" && (
                   <PersonalInfoForm
                     data={resumeData.personal_info}
@@ -164,6 +166,7 @@ const ResumeBuilder = () => {
                   />
                 )}
 
+                {/* summary section */}
                 {activeSection.id == "summary" && (
                   <ProfessionalSummaryForm
                     data={resumeData.professional_summary}
@@ -176,6 +179,20 @@ const ResumeBuilder = () => {
                     setResumeData={setResumeData}
                   />
                 )}
+
+                {/* experience section */}
+                {activeSection.id == "experience" && (
+                  <ExperienceForm
+                    data={resumeData.experience}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        experience: data,
+                      }))
+                    }
+                  />
+                )}
+                
               </div>
             </div>
           </div>
