@@ -20,8 +20,12 @@ import ProfessionalSummaryForm from "../components/ProfessionalSummaryForm";
 import ExperienceForm from "../components/ExperienceForm";
 
 const ResumeBuilder = () => {
+  // Get resumeId from URL (used to load existing resume)
   const { resumeId } = useParams();
 
+  // ----- MAIN RESUME STATE -----
+
+  // This state holds all resume data being edited
   const [resumeData, setResumeData] = useState({
     _id: "",
     title: "",
@@ -64,9 +68,11 @@ const ResumeBuilder = () => {
     loadExistingResume();
   }, []);
 
+
   return (
+    // outermost container
     <div>
-      {/* Back to Dashboard */}
+      {/* BACK TO DASHBOARD LINK */}
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Link
           to={"/app"}
@@ -76,15 +82,17 @@ const ResumeBuilder = () => {
         </Link>
       </div>
 
-      {/* Panels */}
+      {/* MAIN BUILDER LAYOUT */}
       <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="grid lg:grid-cols-12 gap-8">
-          {/* Left Panel - Form */}
+          {/* LEFT PANEL (FORMS) */}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
 
-              {/* progress bar using activeSectionIndex */}
+              {/* Progress bar background */}
               <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
+              
+              {/* Progress bar fill (based on active section) */}
               <hr
                 className="absolute top-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 border-none transition-all duration-2000"
                 style={{
@@ -115,8 +123,9 @@ const ResumeBuilder = () => {
                   />
                 </div>
 
-                {/* buttons - prev and next */}
+                {/* Previous & Next section buttons */}
                 <div className="flex items-center">
+                  {/* Previous button (hidden on first section) */}
                   {activeSectionIndex !== 0 && (
                     <button
                       onClick={() =>
@@ -125,13 +134,14 @@ const ResumeBuilder = () => {
                         )
                       }
                       className="flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all"
-                      disabled={activeSectionIndex == 0}
+                      disabled={activeSectionIndex === 0}
                     >
                       <ChevronLeft className="size-4" />
                       Previous
                     </button>
                   )}
 
+                  {/* Next button (disabled on last section) */}
                   <button
                     onClick={() =>
                       setActiveSectionIndex((prevIndex) =>
@@ -141,7 +151,7 @@ const ResumeBuilder = () => {
                     className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all ${
                       activeSectionIndex === sections.length - 1 && "opacity-50"
                     }`}
-                    disabled={activeSectionIndex == sections.length - 1}
+                    disabled={activeSectionIndex === sections.length - 1}
                   >
                     Next
                     <ChevronRight className="size-4" />
@@ -149,9 +159,10 @@ const ResumeBuilder = () => {
                 </div>
               </div>
 
-              {/* Form Content */}
+
+              {/* FORM CONTENT */}
               <div className="space-y-6">
-                {/* personal section */}
+                {/* Personal Info section */}
                 {activeSection.id == "personal" && (
                   <PersonalInfoForm
                     data={resumeData.personal_info}
@@ -166,7 +177,7 @@ const ResumeBuilder = () => {
                   />
                 )}
 
-                {/* summary section */}
+                {/* Professional Summary section */}
                 {activeSection.id == "summary" && (
                   <ProfessionalSummaryForm
                     data={resumeData.professional_summary}

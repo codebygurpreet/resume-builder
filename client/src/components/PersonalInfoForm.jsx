@@ -54,6 +54,7 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
                     </label>
                 </div>
             )}
+            
         </div>
 
         {/* Fields */}
