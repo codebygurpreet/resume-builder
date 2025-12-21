@@ -60,7 +60,7 @@ const EducationForm = ({data, onChange}) => {
 
                             <div className='flex justify-between items-start'>
                                 <h4>Education #{index + 1}</h4>
-                                <button onClick={()=> removeEducation(index)}>
+                                <button onClick={()=> removeEducation(index)} className='text-red-500 hover:text-red-700'>
                                     <Trash2 className='size-4'/>
                                 </button>
                             </div>
