@@ -6,9 +6,13 @@ import {
   Briefcase,
   ChevronLeft,
   ChevronRight,
+  DownloadIcon,
+  EyeIcon,
+  EyeOffIcon,
   FileText,
   FolderIcon,
   GraduationCap,
+  Share2Icon,
   Sparkles,
   User,
 } from "lucide-react";
@@ -71,6 +75,27 @@ const ResumeBuilder = () => {
     loadExistingResume();
   }, []);
 
+  // handler to change the resume visiblity
+  const changeResumeVisiblity = () => {
+    setResumeData({ ...resumeData, public: !resumeData.public });
+  };
+
+  // handle share resume url
+  const handleShare = () => {
+    const frontUrl = window.location.href.split("/app")[0];
+    const resumeUrl = frontUrl + "/view/" + resumeId;
+
+    if (navigator.share) {
+      navigator.share({ url: resumeUrl, text: "My Resume" });
+    } else {
+      alert("Share not supported on this browser");
+    }
+  };
+
+  // downloadResume
+  const downloadResume = () => {
+    window.print();
+  };
 
   return (
     // outermost container
@@ -87,16 +112,13 @@ const ResumeBuilder = () => {
 
       {/* MAIN BUILDER LAYOUT */}
       <div className="max-w-7xl mx-auto px-4 pb-8">
-
         <div className="grid lg:grid-cols-12 gap-8">
-
           {/* LEFT PANEL (FORMS) */}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
-
               {/* Progress bar background */}
               <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
-              
+
               {/* Progress bar fill (based on active section) */}
               <hr
                 className="absolute top-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 border-none transition-all duration-2000"
@@ -163,7 +185,6 @@ const ResumeBuilder = () => {
                   </button>
                 </div>
               </div>
-
 
               {/* FORM CONTENT */}
               <div className="space-y-6">
@@ -247,8 +268,9 @@ const ResumeBuilder = () => {
                     }
                   />
                 )}
-                
               </div>
+
+              {/* Save Button */}
               <button className="bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm">
                 Save Changes
               </button>
@@ -257,7 +279,31 @@ const ResumeBuilder = () => {
 
           {/* Right Panel - Preview */}
           <div className="lg:col-span-7 max-lg:mt-6">
-            <div>{/* Buttons */}</div>
+            {/* Buttons */}
+            <div className="relative w-full">
+              <div className="absolute bottom-3 left-0 right-0 flex items-center justify-end gap-2">
+
+                {/* shareButton - if public */}
+                {resumeData.public && (
+                  <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
+                    <Share2Icon className='size-4'/>
+                    Share
+                  </button>
+                )}
+
+                {/* VisibilityButton */}
+                <button onClick={changeResumeVisiblity} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-purple-100 to-purple-200 text-purple-600 ring-purple-300 rounded-lg hover:ring transition-colors'>
+                  {resumeData.public ? <EyeIcon className='size-4'/> : <EyeOffIcon className='size-4'/>}
+                  {resumeData.public ? "public" : "private"}
+                </button>
+
+                {/* downloadButton */}
+                <button onClick={downloadResume} className='flex items-center gap-2 px-6 py-2  text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
+                  <DownloadIcon className='size-4'/>
+                  Download
+                </button>
+              </div>
+            </div>
 
             {/* resume preview Component */}
             <ResumePreview

@@ -119,6 +119,7 @@ const Dashboard = () => {
 
         {/* Section that shows all saved resumes */}
         <div className="grid grid-cols-2 sm:flex flex-wrap gap-4">
+          
           {/* Loop through all resumes */}
           {allResumes.map((resume, index) => {
             const baseColor = colors[index % colors.length];
