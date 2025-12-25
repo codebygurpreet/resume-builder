@@ -6,7 +6,7 @@ const connectDB = async () => {
     try{
         mongoose.connection.on("connected", ()=>{console.log("Databaseconnected successfully")})
 
-        let mongodbURI = process.env.mongodbURI;
+        let mongodbURI = process.env.MONGODB_URI;
         const projectName = 'resume-builder';
 
         if(!mongodbURI){
@@ -18,3 +18,5 @@ const connectDB = async () => {
         console.error("Error connecting to MongoDB:", error)
     }
 }
+
+export default connectDB;

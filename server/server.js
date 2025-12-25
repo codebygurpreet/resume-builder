@@ -1,7 +1,8 @@
 // imoprt necessary modules
 import express from "express";
 import cors from "cors";
-import "dotenv/config"
+import "dotenv/config";
+import connectDB from "./configs/db.js";
 
 // creating express app and PORT variable
 const app = express();
@@ -16,6 +17,8 @@ app.get('/', (req,res)=> {
 })
 
 // app listening on
-app.listen((PORT), ()=>{
-    console.log(`Server is running on port ${PORT}`)
+app.listen((PORT), async ()=>{
+    // Database connection
+    await connectDB();
+    console.log(`Server is running on port ${PORT}`)   
 })
