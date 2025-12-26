@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const generateToken = (userId)=> {
-    const token = jwt.sign({userId}, process.env.JWT_SECRET, {expiresIN: '7d'})
+    const token = jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: '7d'})
     return token;
 }
 
@@ -34,6 +34,58 @@ export const registerUser = async (req, res) => {
 
         // success response
         return res.status(201).json({ message: "User created successfuly", token, user: newUser });
+
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+}
+
+// controller for user login
+// POST: /api/users/login
+export const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // check if user already exists
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // check if password is correct
+        if(!user.comparePassword(password)){
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // generate token and remove password from response
+        const token = generateToken(user._id);
+        user.password = undefined;
+
+        // success response
+        return res.status(200).json({ message: "Login successfully", token, user: user });
+
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+}
+
+
+// controller for getting user by id
+// POST: /api/users/data
+export const getUserById = async (req, res) => {
+    try {
+        // we will get userID through protect middleware
+        const userId = req.userId;
+
+        // check if user already exists
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // remove password from response and success response
+        user.password = undefined;
+        return res.status(200).json({ user });
 
     } catch (error) {
         return res.status(400).json({ message: error.message });
