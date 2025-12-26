@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import connectDB from "./configs/db.js";
+import userRouter from "./routes/userRoutes.js"
 
 // creating express app and PORT variable
 const app = express();
@@ -14,11 +15,12 @@ app.use(cors());
 
 app.get('/', (req,res)=> {
     res.send("Server is live...")
-})
+});
+app.use('/api/users', userRouter);
 
 // app listening on
 app.listen((PORT), async ()=>{
     // Database connection
     await connectDB();
-    console.log(`Server is running on port ${PORT}`)   
+    console.log(`Server is running on port ${PORT}`);
 })
