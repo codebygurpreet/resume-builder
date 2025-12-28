@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, setLoading } from "./app/features/authSlice";
 import { useEffect } from "react";
+import api from './configs/api'
 
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
@@ -11,16 +12,20 @@ import Preview from "./pages/Preview";
 
 const App = () => {
   const dispatch = useDispatch();
+  
   const getUserData = async () => {
     const token = localStorage.getItem("token");
     try {
       if (token) {
+
         const { data } = await api.get("api/users/data", {
           headers: { Authorization: token },
         });
+
         if (data.user) {
           dispatch(login({ token, user: data.user }));
         }
+
         dispatch(setLoading(false));
       } else {
         dispatch(setLoading(false));
