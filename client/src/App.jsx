@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { login, setLoading } from "./app/features/authSlice";
 import { useEffect } from "react";
 import api from './configs/api'
+import { Toaster } from 'react-hot-toast';
 
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
@@ -42,6 +43,7 @@ const App = () => {
 
   return (
     <>
+    <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
 
