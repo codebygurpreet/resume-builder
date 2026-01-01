@@ -90,9 +90,19 @@ const Dashboard = () => {
 
   // ----- EDIT HANDLERS -----
   // Handle editing resume title
-  const editTitle = async (event) => {
-    event.preventDefault();
-  };
+  const editTitle = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await api.put('/api/resumes/update/', { resumeId: editResumeId, resumeData: { title } }, { headers: { Authorization: token } });
+      setAllResumes(allResumes.map(resume => resume._id === editResumeId ? { ...resume, title } : resume));
+      setTitle('');
+      setEditResumeId('');
+      toast.success(data.message);
+
+    } catch (error) {
+      toast(error?.response?.data?.message || error.message);
+    }
+  }
 
   // ----- DELETE HANDLER -----
   // Handle deleting a resume
@@ -203,7 +213,7 @@ const Dashboard = () => {
                   <PencilIcon
                     onClick={() => {
                       setEditResumeId(resume._id);
-                      setTitle(resume.Title);
+                      setTitle(resume.title);
                     }}
                     className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors"
                   />

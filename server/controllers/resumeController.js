@@ -98,9 +98,9 @@ export const updateResume = async (req, res) => {
     try {
         const userId = req.userId;
         const { resumeId, resumeData, removeBackground } = req.body;
-        const image = removeBackground.file;
+        const image = req.file;
 
-        let resumeDataCopy = JSON.parse(resumeData);
+        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
 
         if (image) {
 
