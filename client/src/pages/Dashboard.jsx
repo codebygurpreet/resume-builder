@@ -1,5 +1,6 @@
 import {
   FilePenLineIcon,
+  LoaderCircleIcon,
   PencilIcon,
   PlusIcon,
   TrashIcon,
@@ -9,8 +10,17 @@ import {
 import React, { useEffect, useState } from "react";
 import { dummyResumeData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import pdfToText from "react-pdftotext";
+
+// Redux
+import { useSelector } from "react-redux";
+import api from "../configs/api.js";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
+  // getting user auth via useSelector
+  const { user, token } = useSelector(state => state.auth);
+
   // Default accent colors for resumes (used for UI styling)
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"];
 
@@ -20,11 +30,13 @@ const Dashboard = () => {
   // Controls create resume modal visibility
   const [showCreateResume, setShowCreateResume] = useState(false);
   // Controls upload resume modal visibility
-  const [showUploadResume, setshowUploadResume] = useState(false);
+  const [showUploadResume, setShowUploadResume] = useState(false);
   // Stores resume title while creating/editing
   const [title, setTitle] = useState("");
   // Stores uploaded resume file
   const [resume, setResume] = useState(null);
+  // Controls state for showing loading
+  const [isLoading, setIsLoading] = useState(false);
 
   // Stores resume ID when editing an existing resume
   const [editResumeId, setEditResumeId] = useState(null);
@@ -36,21 +48,44 @@ const Dashboard = () => {
 
   // Fetch all resumes (currently using dummy data)
   const loadAllResumes = async () => {
-    setAllResumes(dummyResumeData);
+    try {
+      const { data } = await api.get('api/users/resumes', {headers: {Authorization: token}});
+      setAllResumes(data.resumes);
+    } catch (error) {
+      toast.error(error?.response?.data?.messages || error.message);
+    }
   };
 
   // ----- CREATE / UPLOAD HANDLERS -----
   // Handle creating a new resume
   const createResume = async (event) => {
-    event.preventDefault();
-    setShowCreateResume(false);
-    navigate(`/app/builder/new123`);
+    try {
+      event.preventDefault();
+      const { data } = await api.post('api/resumes/create', {title}, {headers: {Authorization: token}});
+      setAllResumes([...allResumes, data.resume]);
+      setTitle('');
+      setShowCreateResume(false);
+      navigate(`/app/builder/${data.resume._id}`);
+    } catch (error) {
+      toast.error(error?.response?.data?.messages || error.message);
+    }
   };
   // Handle uploading an existing resume
   const uploadResume = async (event) => {
     event.preventDefault();
-    setshowUploadResume(false);
-    navigate(`/app/builder/new123`);
+    setIsLoading(true);
+    try {
+      const resumeText = await pdfToText(resume);
+      const { data } = await api.post('api/ai/upload-resume', {title, resumeText}, {headers: {Authorization: token}});
+      console.log(data);
+      setTitle('');
+      setResume(null);
+      setShowUploadResume(false);
+      navigate(`/app/builder/${data.resumeId}`);
+    } catch (error) {
+      toast.error(error?.response?.data?.messages || error.message);
+    }
+    setIsLoading(false);
   };
 
   // ----- EDIT HANDLERS -----
@@ -102,7 +137,7 @@ const Dashboard = () => {
           
           {/* Button to open Upload Resume popup */}
           <button
-            onClick={() => setshowUploadResume(true)}
+            onClick={() => setShowUploadResume(true)}
             className="w-full bg-white sm:max-w-36 h-48 flex flex-col items-center justify-center rounded-lg gap-2 text-slate-600 border border-dashed border-slate-300 group hover:border-purple-500 hover:shadow-lg transition-all duration-300 group hover:border-purple-500 hover:shadow-lg transition-all duration-300 cursor-pointer"
           >
             <UploadCloudIcon className="size-11 transition-all duration-300 p-2.5 bg-gradient-to-br from-purple-300 to-purple-500 text-white rounded-full" />
@@ -219,7 +254,7 @@ const Dashboard = () => {
         {showUploadResume && (
           <form
             onSubmit={uploadResume}
-            onClick={() => setshowUploadResume(false)}
+            onClick={() => setShowUploadResume(false)}
             className="fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-10 flex items-center justify-center"
           >
             <div
@@ -261,13 +296,14 @@ const Dashboard = () => {
                 />
               </div>
 
-              <button className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-                Upload Resume
+              <button disabled={isLoading} className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                {isLoading && <LoaderCircleIcon className="animate-spin size-4 text-white"/>}
+                {isLoading ? 'Uploading...' : 'Upload Resume'}
               </button>
               <XIcon
                 className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 cursor-pointer transition-colors"
                 onClick={() => {
-                  setshowUploadResume(false);
+                  setShowUploadResume(false);
                   setTitle("");
                 }}
               />
