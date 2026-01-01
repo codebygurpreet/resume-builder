@@ -17,6 +17,7 @@ const Navbar = () => {
     const logoutUser = () => {
         navigate('/')
         dispatch(logout());
+        localStorage.removeItem('token'); // removing the token on logout button click
     }
 
   return (
