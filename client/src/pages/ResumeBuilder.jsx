@@ -26,9 +26,14 @@ import EducationForm from "../components/EducationForm";
 import ProjectForm from "../components/ProjectForm";
 import SkillsForm from "../components/SkillsForm";
 
+// Redux
+import { useSelector } from 'react-redux';
+import api from '../configs/api';
+
 const ResumeBuilder = () => {
   // Get resumeId from URL (used to load existing resume)
   const { resumeId } = useParams();
+  const { token } = useSelector(state=> state.auth);
 
   // ----- MAIN RESUME STATE -----
 
@@ -48,10 +53,19 @@ const ResumeBuilder = () => {
   });
 
   const loadExistingResume = async () => {
-    const resume = dummyResumeData.find((resume) => resume._id === resumeId);
-    if (resume) {
-      setResumeData(resume);
-      document.title = resume.title;
+    // const resume = dummyResumeData.find((resume) => resume._id === resumeId);
+    // if (resume) {
+    //   setResumeData(resume);
+    //   document.title = resume.title;
+    // }
+    try {
+      const { data } = await api.get(`/api/resumes/get/${resumeId}`, {headers: {Authorization: token}});
+      if(data.resume){
+        setResumeData(data.resume);
+        document.title = data.resume.title;
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
