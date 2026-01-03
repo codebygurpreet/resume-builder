@@ -100,10 +100,14 @@ export const updateResume = async (req, res) => {
         const { resumeId, resumeData, removeBackground } = req.body;
         const image = req.file;
 
-        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData));
+        let resumeDataCopy;
+        if(typeof resumeData === 'string'){
+            resumeDataCopy = await JSON.parse(resumeData);
+        }else{
+            resumeDataCopy = structuredClone(resumeData);
+        }
 
         if (image) {
-
             const imageBufferData = fs.createReadStream(image.path);
 
             const response = await imagekit.files.upload({
@@ -114,7 +118,7 @@ export const updateResume = async (req, res) => {
                     pre: 'w-300, h-300,fo-face,z-0.75' + (removeBackground ? ',e-bgremove' : '')
                 }
             });
-            resumeDataCopy.personal_info.image = response.url
+            resumeDataCopy.personal_info.image = response.url;
         }
 
         // find by userId and update resume
