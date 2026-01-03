@@ -61,7 +61,7 @@ const ResumeSchema = new mongoose.Schema({
             default: '' 
         },
     },
-    experiences: [{
+    experience: [{
         company: { 
             type: String 
         },
