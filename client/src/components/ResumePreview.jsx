@@ -3,6 +3,7 @@ import ModernTemplate from "./templates/ModernTemplate";
 import MinimalTemplate from "./templates/MinimalTemplate";
 import MinimalImageTemplate from "./templates/MinimalImageTemplate";
 import ClassicTemplate from "./templates/ClassicTemplate";
+import FAANGPathTemplate from "./templates/FAANGPathTemplate";
 
 const ResumePreview = ({ data, template, accentColor, classes = "" }) => {
 
@@ -14,6 +15,8 @@ const ResumePreview = ({ data, template, accentColor, classes = "" }) => {
         return <MinimalTemplate data={data} accentColor={accentColor} />;
       case "minimal-image":
         return <MinimalImageTemplate data={data} accentColor={accentColor} />;
+      case "faangPath":
+        return <FAANGPathTemplate data={data} accentColor={accentColor} />;
       default:
         return <ClassicTemplate data={data} accentColor={accentColor} />;
     }

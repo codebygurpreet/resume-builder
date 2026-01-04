@@ -26,6 +26,11 @@ const TemplateSelector = ({selectedTemplate, onChange}) => {
             name: "Minimal",
             preview: "Ultra-clean design that puts your content front and center"
         },
+        {
+            id: "faangPath",
+            name: "FAANGPath",
+            preview: "A clean, minimal resume template designed for clarity, simplicity, and excellent ATS readability."
+        },
     ]
 
   return (
