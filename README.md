@@ -1,8 +1,10 @@
+
 ---
 
 # 📄 Resume Builder
 
 **Resume Builder** is a full-stack web application that allows users to create, customize, enhance, preview, and share professional resumes.
+
 It features a modern **React + Redux (Vite)** frontend, a **Node.js + Express + MongoDB** backend, and **AI-powered resume content enhancement**.
 
 The project is designed with **clean architecture, modular structure, and real-world usability** in mind.
