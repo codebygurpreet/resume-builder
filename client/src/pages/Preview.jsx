@@ -4,6 +4,9 @@ import { dummyResumeData } from '../assets/assets';
 import ResumePreview from '../components/ResumePreview';
 import { ArrowLeftIcon, Loader } from 'lucide-react';
 
+// Redux
+import api from '../configs/api';
+
 const Preview = () => {
 
   // getting resumeId from url params
@@ -16,8 +19,14 @@ const Preview = () => {
 
   // setting resume data based on resumeId
   const loadResumeData = async () => {
-    setResumeData(dummyResumeData.find(resume => resume._id === resumeId || null))
-    setIsLoading(false);
+     try {
+      const { data } = await api.get(`/api/resumes/public/${resumeId}`);
+      setResumeData(data.resume);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   // load resume data on Component mount
@@ -28,7 +37,7 @@ const Preview = () => {
   return resumeData ? (
     <div className='bg-slate-100'>
       <div className='max-w-3xl mx-auto py-10'>
-        <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accentColor} classes='py-4 bg-white'/>
+        <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} classes='py-4 bg-white'/>
       </div>
     </div>
   ) : (
